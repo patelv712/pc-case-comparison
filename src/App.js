@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const server = "http://localhost:4000/api";
+const server = "https://pc-case-comparison.onrender.com/api";
 
 // - for missing fields and ensure vals are strings
 function renderSpecValue(value) {
