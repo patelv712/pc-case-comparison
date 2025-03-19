@@ -62,10 +62,10 @@ const App = () => {
   const sortByPrice = () => {
     console.log("start");
     const sorted = [...compareList].sort((a, b) => {
-      const aPrices = a.v2_lowest_prices?.US || [];
-      console.log(aPrices);
-      const bPrices = b.v2_lowest_prices?.US || [];
-      console.log(bPrices);
+      const aPrices = a.price || [];
+      console.log("a", aPrices);
+      const bPrices = b.price || [];
+      console.log("b", bPrices);
       return aPrices - bPrices;
     });
     setCompareList(sorted);
@@ -102,11 +102,7 @@ const App = () => {
 
       {loading && <p>Loading search results...</p>}
 
-
-
-      {/* Search Results */}
-
-
+      {/* search */}
 
 
       <div style={{ marginBottom: "2rem" }}>
@@ -144,9 +140,135 @@ const App = () => {
           })}
         </ul>
       </div>
+
+      {/* comparison */}
+
+      <div>
+        <h2>Comparison</h2>
+        { /* only sort it if there are things to compare */ }
+        {compareList.length > 0 ? (
+          <div>
+            <button onClick={sortByPrice} style={{ marginBottom: "1rem" }}>
+              Sort by Price
+            </button>
+            <div style={{ overflowX: "auto" }}>
+              <table
+                style={{
+                  borderCollapse: "collapse",
+                  width: "100%",
+                  minWidth: "600px",
+                }}
+              >
+                <thead>
+                  <tr>
+                    <th
+                      style={{
+                        border: "1px solid #ccc",
+                        padding: "0.5rem",
+                        background: "#f0f0f0",
+                      }}
+                    >
+                      Specification
+                    </th>
+                    {compareList.map((product) => {
+                      const productId = product.buildcores_id || product.id;
+                      return (
+                        <th
+                          key={productId}
+                          style={{
+                            border: "1px solid #ccc",
+                            padding: "0.5rem",
+                            background: "#f0f0f0",
+                          }}
+                        >
+                          {product.name}
+                          <br />
+                          <button
+                            onClick={() => removeFromCompare(productId)}
+                            style={{ fontSize: "0.8rem", marginTop: "0.5rem" }}
+                          >
+                            Remove
+                          </button>
+                        </th>
+                      );
+                    })}
+                  </tr>
+                </thead>
+                <tbody>
+
+                  {/* each spec for all prod */}
+
+                  {getAllSpecsKeys().map((specKey) => (
+                    <tr key={specKey}>
+                      <td
+                        style={{
+                          border: "1px solid #ccc",
+                          padding: "0.5rem",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        {specKey}
+                      </td>
+                      {compareList.map((product) => {
+                        const productId = product.buildcores_id || product.id;
+                        return (
+                          <td
+                            key={productId + specKey}
+                            style={{
+                              border: "1px solid #ccc",
+                              padding: "0.5rem",
+                            }}
+                          >
+                            {product.specifications
+                              ? renderSpecValue(product.specifications[specKey])
+                              : "-"}
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  ))}
+
+                  {/* price */}
+
+                  <tr>
+                    <td
+                      style={{
+                        border: "1px solid #ccc",
+                        padding: "0.5rem",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      Lowest Price
+                    </td>
+                    {compareList.map((product) => {
+                      const productId = product.buildcores_id || product.id;
+                      // console.log(product.v2_lowest_prices?);
+                      // some cases dont have field
+                      const lowestPrice = product.price || [];
+                      console.log("price", product.price);
+                      console.log(product.v2_lowest_prices?.US);
+                      return (
+                        <td
+                          key={productId + "price"}
+                          style={{
+                            border: "1px solid #ccc",
+                            padding: "0.5rem",
+                          }}
+                        >
+                          {lowestPrice ? `$${lowestPrice}` : "-"}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        ) : (
+          <p>Add PC cases to compare.</p>
+        )}
+      </div>
     </div>
-
-
 
 
   );
