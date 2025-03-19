@@ -13,6 +13,7 @@ app.use(express.json());
 app.get("/api/search", async (req, res) => {
   const { category, query } = req.query;
   const payload = {
+    //change if want another category
     part_category: category || "PCCase",
     // inc limit to avoid pagination (later feature if needed)
     limit: 100,
@@ -20,9 +21,6 @@ app.get("/api/search", async (req, res) => {
     sort: 0,
     filters: [],
     search_query: query || "",
-    show_disabled_interactive_models: true,
-    show_interactive_first: false,
-    // compatibility_build: ,
   };
 
   try {
